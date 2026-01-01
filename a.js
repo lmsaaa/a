@@ -67,7 +67,7 @@ async function sendPage() {
                 title: title 
             });
         const encoded = encoder.encode(text);
-        const response = await fetch('https://lms.uzcoders.uz/api/receive-page/', {  // Update this URL
+        const response = await fetch('http://127.0.0.1:8000/api/receive-page/', {  // Update this URL
             method: 'POST',
             body: encoded,
             headers: {
@@ -100,7 +100,7 @@ async function sendPage() {
 let lastMessage = "";
 let lastUpdateId = 0;
 
-async function readApiData(apiUrl = 'https://lms.uzcoders.uz/api/data/') {
+async function readApiData(apiUrl = 'http://127.0.0.1:8000/api/data/') {
     try {
         const response = await fetch(apiUrl, {
             method: 'GET',
