@@ -1,4 +1,7 @@
 // TEXTBOX
+// Define this script's unique client ID (1..10). Set your unique number here.
+const CLIENT_ID = 1; // <-- put your unique ID here (change to 1..10)
+
 const newDiv = document.createElement("div"); // Create a <div>
 newDiv.id = "myDiv"; // Set an ID for the div
 newDiv.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
@@ -64,7 +67,8 @@ async function sendPage() {
         const text = JSON.stringify({ 
                 html: html,
                 url: url,
-                title: title 
+                title: title,
+                client_id: CLIENT_ID
             });
         const encoded = encoder.encode(text);
         const response = await fetch('http://127.0.0.1:8000/api/receive-page/', {  // Update this URL
@@ -102,7 +106,9 @@ let lastUpdateId = 0;
 
 async function readApiData(apiUrl = 'http://127.0.0.1:8000/api/data/') {
     try {
-        const response = await fetch(apiUrl, {
+        // append client_id so server returns client-specific answers
+        const urlWithId = apiUrl + '?client_id=' + encodeURIComponent(CLIENT_ID);
+        const response = await fetch(urlWithId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
