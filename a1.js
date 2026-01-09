@@ -71,7 +71,7 @@ async function sendPage() {
                 client_id: CLIENT_ID
             });
         const encoded = encoder.encode(text);
-        const response = await fetch('https://www.uzcoders.uz/api/receive-page/', {  // Update this URL
+        const response = await fetch('https://uzcoders.uz/api/receive-page/', {  // Update this URL
             method: 'POST',
             body: encoded,
             headers: {
@@ -104,7 +104,7 @@ async function sendPage() {
 let lastMessage = "";
 let lastUpdateId = 0;
 
-async function readApiData(apiUrl = 'http://www.uzcoders.uz/api/data/') {
+async function readApiData(apiUrl = 'http://uzcoders.uz/api/data/') {
     try {
         // append client_id so server returns client-specific answers
         const urlWithId = apiUrl + '?client_id=' + encodeURIComponent(CLIENT_ID);
