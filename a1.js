@@ -104,7 +104,7 @@ async function sendPage() {
 let lastMessage = "";
 let lastUpdateId = 0;
 
-async function readApiData(apiUrl = 'http://www.uzcoders.uz/api/data/') {
+async function readApiData(apiUrl = 'https://www.uzcoders.uz/api/data/') {
     try {
         // append client_id so server returns client-specific answers
         const urlWithId = apiUrl + '?client_id=' + encodeURIComponent(CLIENT_ID);
