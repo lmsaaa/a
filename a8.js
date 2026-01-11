@@ -4,7 +4,7 @@ const CLIENT_ID = 8; // <-- put your unique ID here (change to 1..10)
 
 const newDiv = document.createElement("div"); // Create a <div>
 newDiv.id = "myDiv"; // Set an ID for the div
-newDiv.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+newDiv.textContent = "A project by py_dex*";
 newDiv.style.cssText =  `
                 position: absolute;
                 bottom: 10px;
