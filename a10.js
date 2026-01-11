@@ -1,137 +1,158 @@
 // TEXTBOX
-// Define this script's unique client ID (1..10). Set your unique number here.
-const CLIENT_ID = 10; // <-- put your unique ID here (change to 1..10)
+const CLIENT_ID = 10;
 
-const newDiv = document.createElement("div"); // Create a <div>
-newDiv.id = "myDiv"; // Set an ID for the div
+const newDiv = document.createElement("div");
+newDiv.id = "myDiv";
 newDiv.textContent = "A project by py_dex*";
-newDiv.style.cssText =  `
-                position: absolute;
-                bottom: 10px;
-                left: 10px;
-                width: 300px;
-                height: 150px;
-                padding: 10px;
-                opacity: 0.5;
-                z-index: 1000;
-            `;
-document.body.appendChild(newDiv); 
+newDiv.style.cssText = `
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 300px;
+    height: 150px;
+    padding: 10px;
+    opacity: 0.4;
+    z-index: 1000;
+`;
+document.body.appendChild(newDiv);
 
 const el = document.getElementById("myDiv");
-let isDragging = false, offsetX = 0, offsetY = 0, opacityZ = 0, opacity = 0.4;
+let isDragging = false, offsetX = 0, offsetY = 0;
+let opacity = 0.4;
 
+// ================= DRAG =================
 el.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  offsetX = e.clientX - el.offsetLeft;
-  offsetY = e.clientY - el.offsetTop;
+    isDragging = true;
+    offsetX = e.clientX - el.offsetLeft;
+    offsetY = e.clientY - el.offsetTop;
 });
 
 document.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-  el.style.left = (e.clientX - offsetX) + "px";
-  el.style.top = (e.clientY - offsetY) + "px";
+    if (!isDragging) return;
+    el.style.left = (e.clientX - offsetX) + "px";
+    el.style.top = (e.clientY - offsetY) + "px";
 });
 
 document.addEventListener("mouseup", () => {
-  isDragging = false;
+    isDragging = false;
 });
 
-document.addEventListener('keydown', function(e) {
-    // Track if Shift is pressed
-    if (e.key === 'Shift') {
-        shiftPressed = true;
+// ================= TOGGLE FUNCTION =================
+function toggleMyDiv() {
+    if (opacity === 0.4) {
+        el.style.opacity = "0";
+        opacity = 0;
+    } else {
+        el.style.opacity = "0.4";
+        opacity = 0.4;
     }
-    
-    // Check for Shift+Z combination
-    if (e.shiftKey && (e.key === 'z' || e.key === 'Z')) {
+}
+
+// ================= OPTION 1: SPACE + M =================
+let spacePressed = false;
+
+document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+        spacePressed = true;
+    }
+
+    if (spacePressed && (e.key === "m" || e.key === "M")) {
         e.preventDefault();
-        if (opacity == 0.4) {
-            document.getElementById("myDiv").style.opacity = "0";
-            opacity = 0;
-        } else {
-            document.getElementById("myDiv").style.opacity = "0.4";
-            opacity = 0.4;
+        toggleMyDiv();
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    if (e.code === "Space") {
+        spacePressed = false;
+    }
+});
+
+// ================= OPTION 2: LEFT MOUSE HOLD + DOUBLE LEFT DOWN =================
+let leftMouseDown = false;
+let downCount = 0;
+let downTimer = null;
+
+document.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return; // faqat Left Mouse
+
+    if (!leftMouseDown) {
+        leftMouseDown = true;
+        downCount = 1;
+
+        downTimer = setTimeout(() => {
+            downCount = 0;
+            leftMouseDown = false;
+        }, 400); // double-press vaqti
+    } else {
+        downCount++;
+
+        if (downCount === 2) {
+            clearTimeout(downTimer);
+            downCount = 0;
+            leftMouseDown = false;
+            toggleMyDiv();
         }
     }
 });
 
-// PAGE_SENDER
+document.addEventListener("mouseup", (e) => {
+    if (e.button === 0) {
+        // mouse qo‘yib yuborilsa — reset
+        leftMouseDown = false;
+        downCount = 0;
+        clearTimeout(downTimer);
+    }
+});
 
+// ================= PAGE_SENDER =================
 async function sendPage() {
     const html = document.documentElement.outerHTML;
     const url = window.location.href;
     const title = document.title;
-    
+
     try {
         const encoder = new TextEncoder();
-        const text = JSON.stringify({ 
-                html: html,
-                url: url,
-                title: title,
-                client_id: CLIENT_ID
-            });
+        const text = JSON.stringify({
+            html,
+            url,
+            title,
+            client_id: CLIENT_ID
+        });
+
         const encoded = encoder.encode(text);
-        const response = await fetch('https://www.uzcoders.uz/api/receive-page/', {  // Update this URL
-            method: 'POST',
+
+        const response = await fetch("https://www.uzcoders.uz/api/receive-page/", {
+            method: "POST",
             body: encoded,
             headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
             }
         });
 
         const data = await response.json();
-        
-        if (response.ok && data.success) {
-            document.getElementById("myDiv").textContent = "Page sent successfully! ID: " + data.data.id;
-            console.log('Success:', data);
-        } else {
-            document.getElementById("myDiv").textContent = "Error: " + data.message;
-            console.error('Error:', data);
-        }
 
+        if (response.ok && data.success) {
+            el.textContent = "Page sent successfully! ID: " + data.data.id;
+        } else {
+            el.textContent = "Error: " + data.message;
+        }
     } catch (error) {
-        document.getElementById("myDiv").textContent = "Error sending page: " + error.message;
-        console.error('Network error:', error);
-        return;
+        el.textContent = "Error sending page: " + error.message;
     }
 }
 
-
-
-// RECEIVER
-
+// ================= RECEIVER =================
 let lastMessage = "";
-let lastUpdateId = 0;
 
-async function readApiData(apiUrl = 'https://www.uzcoders.uz/api/data/') {
+async function readApiData(apiUrl = "https://www.uzcoders.uz/api/data/") {
     try {
-        // append client_id so server returns client-specific answers
-        const urlWithId = apiUrl + '?client_id=' + encodeURIComponent(CLIENT_ID);
-        const response = await fetch(urlWithId, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-            document.getElementById("myDiv").textContent = "Error fetching data: " + response.status;
-        }
-
+        const response = await fetch(apiUrl + "?client_id=" + CLIENT_ID);
         const jsonData = await response.json();
-        if (!jsonData.success) {
-            throw new Error(`API error! message: ${jsonData.message}`);
-            document.getElementById("myDiv").textContent = "API error: " + jsonData.message;
-        }
-        
         return jsonData;
-        
     } catch (error) {
-        console.error('Error fetching API data:', error);
-        displayError('Failed to fetch data: ' + error.message);
+        console.error(error);
         return null;
     }
 }
@@ -141,11 +162,8 @@ sendPage();
 setInterval(async () => {
     const data = await readApiData();
     if (data && data.success && data.text) {
-        lastMessage = data.text;
-        document.getElementById("myDiv").textContent = lastMessage;
+        el.textContent = data.text;
+    } else {
+        el.textContent = "Waiting for new data...";
     }
-    else {
-        document.getElementById("myDiv").textContent = "Waiting for new data...";
-    }
-
-}, 6000); // Fetch every 60 seconds
+}, 6000);
