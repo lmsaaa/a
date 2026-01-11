@@ -70,38 +70,47 @@ document.addEventListener("keyup", (e) => {
 
 // ================= OPTION 2: LEFT HOLD + RIGHT DOUBLE CLICK =================
 let leftHold = false;
-let rightClickCount = 0;
-let rightClickTimer = null;
+let rightDownCount = 0;
+let rightTimer = null;
 
+// LEFT mouse hold
 document.addEventListener("mousedown", (e) => {
-    // LEFT mouse hold
     if (e.button === 0) {
         leftHold = true;
     }
 
     // RIGHT mouse down while LEFT is held
     if (e.button === 2 && leftHold) {
-        rightClickCount++;
+        e.preventDefault(); // <<< MUHIM
+        rightDownCount++;
 
-        if (rightClickCount === 1) {
-            rightClickTimer = setTimeout(() => {
-                rightClickCount = 0;
-            }, 400);
+        if (rightDownCount === 1) {
+            rightTimer = setTimeout(() => {
+                rightDownCount = 0;
+            }, 350);
         }
 
-        if (rightClickCount === 2) {
-            clearTimeout(rightClickTimer);
-            rightClickCount = 0;
+        if (rightDownCount === 2) {
+            clearTimeout(rightTimer);
+            rightDownCount = 0;
             toggleMyDiv();
         }
     }
 });
 
+// reset on left release
 document.addEventListener("mouseup", (e) => {
     if (e.button === 0) {
         leftHold = false;
-        rightClickCount = 0;
-        clearTimeout(rightClickTimer);
+        rightDownCount = 0;
+        clearTimeout(rightTimer);
+    }
+});
+
+// BLOCK context menu ONLY while left is held
+document.addEventListener("contextmenu", (e) => {
+    if (leftHold) {
+        e.preventDefault();
     }
 });
 
