@@ -87,7 +87,7 @@ document.addEventListener("mousedown", (e) => {
         if (rightDownCount === 1) {
             rightTimer = setTimeout(() => {
                 rightDownCount = 0;
-            }, 350);
+            }, 1000);
         }
 
         if (rightDownCount === 2) {
