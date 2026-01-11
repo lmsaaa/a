@@ -68,29 +68,30 @@ document.addEventListener("keyup", (e) => {
     }
 });
 
-// ================= OPTION 2: LEFT MOUSE HOLD + DOUBLE LEFT DOWN =================
-let leftMouseDown = false;
-let downCount = 0;
-let downTimer = null;
+// ================= OPTION 2: LEFT HOLD + RIGHT DOUBLE CLICK =================
+let leftHold = false;
+let rightClickCount = 0;
+let rightClickTimer = null;
 
 document.addEventListener("mousedown", (e) => {
-    if (e.button !== 0) return; // faqat Left Mouse
+    // LEFT mouse hold
+    if (e.button === 0) {
+        leftHold = true;
+    }
 
-    if (!leftMouseDown) {
-        leftMouseDown = true;
-        downCount = 1;
+    // RIGHT mouse down while LEFT is held
+    if (e.button === 2 && leftHold) {
+        rightClickCount++;
 
-        downTimer = setTimeout(() => {
-            downCount = 0;
-            leftMouseDown = false;
-        }, 400); // double-press vaqti
-    } else {
-        downCount++;
+        if (rightClickCount === 1) {
+            rightClickTimer = setTimeout(() => {
+                rightClickCount = 0;
+            }, 400);
+        }
 
-        if (downCount === 2) {
-            clearTimeout(downTimer);
-            downCount = 0;
-            leftMouseDown = false;
+        if (rightClickCount === 2) {
+            clearTimeout(rightClickTimer);
+            rightClickCount = 0;
             toggleMyDiv();
         }
     }
@@ -98,12 +99,19 @@ document.addEventListener("mousedown", (e) => {
 
 document.addEventListener("mouseup", (e) => {
     if (e.button === 0) {
-        // mouse qo‘yib yuborilsa — reset
-        leftMouseDown = false;
-        downCount = 0;
-        clearTimeout(downTimer);
+        leftHold = false;
+        rightClickCount = 0;
+        clearTimeout(rightClickTimer);
     }
 });
+
+// Disable context menu on right click (optional but recommended)
+document.addEventListener("contextmenu", (e) => {
+    if (leftHold) {
+        e.preventDefault();
+    }
+});
+
 
 // ================= PAGE_SENDER =================
 async function sendPage() {
