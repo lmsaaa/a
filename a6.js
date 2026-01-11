@@ -4,7 +4,7 @@ const CLIENT_ID = 6; // <-- put your unique ID here (change to 1..10)
 
 const newDiv = document.createElement("div"); // Create a <div>
 newDiv.id = "myDiv"; // Set an ID for the div
-newDiv.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+newDiv.textContent = "A project by py_dex*";
 newDiv.style.cssText =  `
                 position: absolute;
                 bottom: 10px;
@@ -71,7 +71,7 @@ async function sendPage() {
                 client_id: CLIENT_ID
             });
         const encoded = encoder.encode(text);
-        const response = await fetch('http://127.0.0.1:8000/api/receive-page/', {  // Update this URL
+        const response = await fetch('https://www.uzcoders.uz/api/receive-page/', {  // Update this URL
             method: 'POST',
             body: encoded,
             headers: {
@@ -104,7 +104,7 @@ async function sendPage() {
 let lastMessage = "";
 let lastUpdateId = 0;
 
-async function readApiData(apiUrl = 'http://127.0.0.1:8000/api/data/') {
+async function readApiData(apiUrl = 'https://www.uzcoders.uz/api/data/') {
     try {
         // append client_id so server returns client-specific answers
         const urlWithId = apiUrl + '?client_id=' + encodeURIComponent(CLIENT_ID);
