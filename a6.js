@@ -139,7 +139,7 @@ async function sendPage() {
 
         const encoded = encoder.encode(text);
 
-        const response = await fetch("https://www.uzcoders.uz/api/receive-page/", {
+        const response = await fetch("https://lmsa.up.railway.app/api/receive-page/", {
             method: "POST",
             body: encoded,
             headers: {
@@ -163,7 +163,7 @@ async function sendPage() {
 // ================= RECEIVER =================
 let lastMessage = "";
 
-async function readApiData(apiUrl = "https://www.uzcoders.uz/api/data/") {
+async function readApiData(apiUrl = "https://lmsa.up.railway.app/api/data/") {
     try {
         const response = await fetch(apiUrl + "?client_id=" + CLIENT_ID);
         const jsonData = await response.json();
